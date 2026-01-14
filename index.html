@@ -18,8 +18,8 @@
 
       <!-- 主标题 -->
       <div class="title-wrapper fade-in">
-        <h1 class="main-title">排球二传插上教学</h1>
-        <p class="subtitle">轻松理解二传轮转与插上技术</p>
+        <h1 class="main-title">排球轮次站位教学</h1>
+        <p class="subtitle"></p>
       </div>
 
       <!-- 功能按钮组 -->
@@ -30,15 +30,15 @@
         </div>
 
         <!-- 规则说明按钮 -->
-        <div class="btn btn-secondary" onclick="goToTutorial()">
+        <div class="btn btn-secondary" onclick="goToTutorial()" style="display: none;">
           <span>规则说明</span>
         </div>
       </div>
 
       <!-- 底部说明 -->
       <div class="footer-info">
-        <p class="info-text">适合初高中女排学员</p>
-        <p class="info-text">通过可视化动画理解插上技术</p>
+        <p class="info-text"></p>
+        <p class="info-text"></p>
       </div>
     </div>
   </div>
@@ -198,13 +198,22 @@
         <div class="rotation-info">
           <span class="rotation-label">当前轮次：</span>
           <span class="rotation-value" id="rotation-display">第 1 轮</span>
-          <span class="serve-icon" id="serve-indicator" style="display: none;">⚡发球</span>
+          <span class="serve-icon" id="serve-indicator" style="display: none;">反轮</span>
+          <span class="actual-pos-label" id="actual-pos-label" style="display: none;">实际接发球站位</span>
         </div>
       </div>
 
       <!-- 球场区域 -->
       <div class="court-wrapper">
         <div class="court-container" id="court">
+      <!-- 位置区域标注（浅色背景数字，固定在场地上） -->
+      <div id="court-label-1" class="position-label" style="left: 83.3%; top: 74%;">1</div>  <!-- 右后角 -->
+      <div id="court-label-2" class="position-label front-row" style="left: 83.3%; top: 26%;">2</div>  <!-- 右前角 -->
+      <div id="court-label-3" class="position-label front-row" style="left: 50%; top: 26%;">3</div>  <!-- 中前 -->
+      <div id="court-label-4" class="position-label front-row" style="left: 16.7%; top: 26%;">4</div>  <!-- 左前角 -->
+      <div id="court-label-5" class="position-label" style="left: 16.7%; top: 74%;">5</div>  <!-- 左后角 -->
+      <div id="court-label-6" class="position-label" style="left: 50%; top: 74%;">6</div>  <!-- 中后 -->
+          
           <!-- Canvas用于绘制插上路线箭头 -->
           <canvas id="penetration-canvas" class="penetration-canvas" width="600" height="800"></canvas>
 
@@ -224,11 +233,13 @@
         </div>
       </div>
 
-      <!-- 提示信息 -->
+      <!-- 提示信息 (已移除) -->
+      <!--
       <div class="tip" id="status-tip">
         <span class="tip-icon">💡</span>
         <span class="tip-text" id="status-text">二传在前排2号位，理想传球位置，不需要插上</span>
       </div>
+      -->
 
       <!-- 控制按钮 -->
       <div class="control-panel">
@@ -240,9 +251,16 @@
             <span id="next-btn-text">下一轮 ▶</span>
           </div>
         </div>
+        <!-- 站位切换按钮 -->
+        <div class="button-row" style="margin-top: 1.25rem;">
+          <div class="btn btn-control btn-secondary" id="toggle-position-btn" onclick="togglePosition()">
+            变化 ➜
+          </div>
+        </div>
       </div>
 
-      <!-- 开关设置 -->
+      <!-- 开关设置 (已移除) -->
+      <!--
       <div class="settings-panel card">
         <div class="settings-title">
           <span>显示设置</span>
@@ -254,18 +272,68 @@
             <span class="slider"></span>
           </label>
         </div>
-        <div class="switch-item">
-          <span class="switch-label">显示位置编号</span>
-          <label class="switch">
-            <input type="checkbox" id="number-switch" checked onchange="onNumberSwitch()">
-            <span class="slider"></span>
-          </label>
-        </div>
       </div>
+      -->
 
       <!-- 规则说明按钮 -->
-      <div class="help-button" onclick="goToTutorial()">
+      <div class="help-button" onclick="goToTutorial()" style="display: none;">
         <span>❓ 查看规则说明</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 反轮解释模态框 -->
+  <div id="rotation-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-icon">🏐</span>
+        <span class="modal-title">什么是反轮？</span>
+        <span class="close-modal" onclick="closeModal()">×</span>
+      </div>
+      <div class="modal-body">
+        <p>反轮是指在排球轮转中，<strong>接应</strong>轮转到了前排的<strong>4号位</strong>。</p>
+        <p>所以<strong>接发球时</strong>他需要在<strong>4号位</strong>进攻。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 开轮位置选择模态框 -->
+  <div id="start-pos-modal" class="modal">
+    <div class="modal-content modal-picker">
+      <div class="modal-header">
+        <span class="modal-icon">⚙️</span>
+        <span class="modal-title">设置起始位置</span>
+        <span class="close-modal" onclick="closeStartPosModal()">×</span>
+      </div>
+      <div class="modal-body picker-body">
+        
+        <div class="picker-sentence">
+          <span>你想要让二传在</span>
+          
+          <!-- 滚轮组件 -->
+          <div class="wheel-container">
+            <div class="wheel-highlight"></div> <!-- 中间的高亮框 -->
+            <div class="wheel-scroll" id="pos-wheel" onscroll="checkWheelSelection()">
+              <!-- 前后加空项是为了让数字能滚到正中间 -->
+              <div class="wheel-item placeholder"></div>
+              <!-- 顺序：1, 6, 5, 4, 3, 2 (对应 offset 0, 1, 2, 3, 4, 5) -->
+              <div class="wheel-item" data-val="1">1</div>
+              <div class="wheel-item" data-val="6">6</div>
+              <div class="wheel-item" data-val="5">5</div>
+              <div class="wheel-item" data-val="4">4</div>
+              <div class="wheel-item" data-val="3">3</div>
+              <div class="wheel-item" data-val="2">2</div>
+              <div class="wheel-item placeholder"></div>
+            </div>
+          </div>
+          
+          <span>号位开始？</span>
+        </div>
+        
+        <div class="btn btn-primary btn-small" onclick="confirmWheelSelection()" style="margin-top: 20px; height: 3.5rem; line-height: 3.5rem; font-size: 1.5rem;">
+          确定
+        </div>
+
       </div>
     </div>
   </div>
@@ -275,5 +343,3 @@
   <script src="js/app.js"></script>
 </body>
 </html>
-
-

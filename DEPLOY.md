@@ -1,249 +1,60 @@
-# 快速部署指南
+# 如何在手机上测试本项目
 
-## 🚀 5分钟部署到GitHub Pages
+要让您的排球轮转小游戏在手机上运行，您需要将其部署到互联网上。最简单的方法是使用 **GitHub Pages**。
 
-### 步骤1：创建GitHub仓库
+## 方法一：使用 GitHub Pages（推荐，永久免费）
 
-1. 登录 [GitHub](https://github.com)
-2. 点击右上角 `+` → `New repository`
-3. 填写信息：
-   - Repository name: `volleyball-setter`（或其他名称）
-   - 选择 `Public`
-   - 点击 `Create repository`
+1.  **上传代码到 GitHub**
+    *   如果您已经有 GitHub 仓库，直接提交并推送代码。
+    *   如果没有，请在 GitHub 上新建一个仓库，然后执行：
+        ```bash
+        git init
+        git add .
+        git commit -m "Initial commit"
+        git branch -M main
+        git remote add origin https://github.com/您的用户名/您的仓库名.git
+        git push -u origin main
+        ```
 
-### 步骤2：上传代码
+2.  **开启 GitHub Pages**
+    *   进入 GitHub 仓库页面。
+    *   点击 **Settings** (设置) -> 左侧菜单底部的 **Pages**。
+    *   在 **Build and deployment** 下的 **Source** 选择 **Deploy from a branch**。
+    *   在 **Branch** 下选择 `main` (或 `master`) 分支，文件夹选择 `/root`（如果您的 index.html 在根目录）或者 `/web-version`（如果是在子目录）。
+    *   **注意**：由于您的 `index.html` 在 `web-version` 文件夹内，您可能需要配置 Pages 发布源为 `web-version` 文件夹（如果 GitHub 允许），或者更简单的做法是：
+        *   将 `web-version` 文件夹里的所有内容移动到项目根目录。
+    *   点击 **Save**。
 
-**方式A：使用Git命令行**（推荐）
+3.  **获取链接**
+    *   等待几分钟，刷新页面，您会看到一个绿色的链接，例如 `https://您的用户名.github.io/您的仓库名/`。
+    *   **复制这个链接发到手机微信**，点击即可在手机上访问！
 
-```bash
-# 1. 打开终端，进入项目目录
-cd /Users/peijiaxing/Desktop/排球轮转小游戏
+## 方法二：局域网访问（无需上传，仅限同一 Wi-Fi）
 
-# 2. 初始化Git（如果还没有）
-git init
+如果您的电脑和手机连在同一个 Wi-Fi 下：
 
-# 3. 添加所有文件
-git add .
+1.  **在 Cursor 终端运行服务器**
+    在 Cursor 的终端中输入：
+    ```bash
+    cd web-version
+    python3 -m http.server 8000
+    ```
 
-# 4. 提交
-git commit -m "首次提交：添加Web版本"
+2.  **查看电脑 IP 地址**
+    *   **Mac**: 打开“系统设置” -> “Wi-Fi” -> 点击详细信息，查看 IP 地址（例如 `192.168.1.5`）。
+    *   **Windows**: 打开终端输入 `ipconfig`，查看 IPv4 地址。
 
-# 5. 关联远程仓库（替换为你的仓库地址）
-git remote add origin https://github.com/你的用户名/volleyball-setter.git
-
-# 6. 推送
-git branch -M main
-git push -u origin main
-```
-
-**方式B：使用GitHub Desktop**（图形界面）
-
-1. 下载安装 [GitHub Desktop](https://desktop.github.com/)
-2. 打开应用，登录GitHub账号
-3. File → Add Local Repository → 选择项目文件夹
-4. 左下角填写提交信息，点击 "Commit to main"
-5. 点击 "Publish repository"
-
-**方式C：直接上传**（最简单）
-
-1. 在GitHub仓库页面，点击 `Add file` → `Upload files`
-2. 拖拽 `web-version` 文件夹到页面
-3. 点击 `Commit changes`
-
-### 步骤3：启用GitHub Pages
-
-1. 进入仓库页面
-2. 点击 `Settings`（设置）
-3. 左侧菜单找到 `Pages`
-4. 在 "Source" 下：
-   - Branch: 选择 `main`
-   - Folder: 选择 `/web-version`（或 `/(root)` 如果web-version在根目录）
-5. 点击 `Save`
-
-### 步骤4：获取网址
-
-- 等待1-2分钟
-- 页面顶部会显示：`Your site is live at https://你的用户名.github.io/volleyball-setter/`
-- 点击链接访问！
+3.  **手机访问**
+    *   打开手机浏览器，输入：`http://电脑IP:8000`
+    *   例如：`http://192.168.1.5:8000`
 
 ---
 
-## 🎯 访问你的网站
+## 手机端体验优化提示
 
-部署成功后：
+本项目已经针对手机端做了如下适配：
+*   ✅ **触摸优化**：滚轮选择器支持手指拖动。
+*   ✅ **响应式布局**：使用 `rem` 单位，自动适应不同屏幕大小。
+*   ✅ **全屏体验**：在 `<head>` 中已添加 `viewport` 设置。
 
-### 主页面URL
-```
-https://你的用户名.github.io/volleyball-setter/
-```
-
-### 示例
-如果你的GitHub用户名是 `zhang-san`：
-```
-https://zhang-san.github.io/volleyball-setter/
-```
-
-### 分享给学员
-直接复制上面的链接，通过：
-- 微信发送
-- QQ发送
-- 短信/邮件
-- 二维码（可用草料二维码等工具生成）
-
----
-
-## 🔄 更新网站内容
-
-当你修改了代码，想更新线上版本：
-
-```bash
-# 1. 进入项目目录
-cd /Users/peijiaxing/Desktop/排球轮转小游戏
-
-# 2. 查看修改
-git status
-
-# 3. 添加修改
-git add .
-
-# 4. 提交
-git commit -m "描述你的修改"
-
-# 5. 推送
-git push
-```
-
-几分钟后，网站自动更新！
-
----
-
-## 🌟 进阶：自定义域名
-
-如果你有自己的域名（如 `volleyball.com`）：
-
-### 步骤1：配置GitHub
-
-1. 在仓库 Settings → Pages
-2. "Custom domain" 填入你的域名：`volleyball.com`
-3. 勾选 "Enforce HTTPS"
-4. 保存
-
-### 步骤2：配置DNS
-
-在你的域名服务商（如阿里云、腾讯云）：
-
-添加CNAME记录：
-- 类型：`CNAME`
-- 主机记录：`@` 或 `www`
-- 记录值：`你的用户名.github.io`
-- TTL：`600`
-
-等待DNS生效（几分钟到几小时）。
-
----
-
-## 📱 生成二维码
-
-使用以下工具生成二维码，方便手机扫码访问：
-
-1. **草料二维码**: https://cli.im/
-   - 输入你的网址
-   - 生成二维码
-   - 下载图片
-
-2. **QR Code Generator**: https://www.qr-code-generator.com/
-   - 输入网址
-   - 自定义样式
-   - 下载
-
-3. **在线工具**: 搜索"二维码生成器"
-
----
-
-## 🎓 给学员的访问指南
-
-分享时可以这样说：
-
-> **排球二传插上教学 - 在线访问**
-> 
-> 📱 **手机访问**：扫描下方二维码
-> [贴上二维码图片]
-> 
-> 💻 **电脑访问**：打开浏览器，输入：
-> `https://你的用户名.github.io/volleyball-setter/`
-> 
-> 📖 **使用说明**：
-> 1. 点击"开始学习"进入主页面
-> 2. 点击"下一轮"观察轮转和插上动画
-> 3. 可以开关显示设置
-> 
-> 🏐 建议保存到浏览器收藏夹，方便随时学习！
-
----
-
-## 🐛 常见问题
-
-### Q1: 提示404错误
-**A**: 检查：
-- GitHub Pages是否已启用
-- 文件夹路径是否正确选择
-- 等待几分钟让部署完成
-
-### Q2: 页面显示但样式错乱
-**A**: 检查：
-- `css/style.css` 文件路径是否正确
-- 浏览器控制台是否有加载错误
-
-### Q3: 推送失败
-**A**: 
-```bash
-# 先拉取远程更新
-git pull origin main
-
-# 再推送
-git push
-```
-
-### Q4: 想删除旧提交记录
-**A**: 
-```bash
-# 创建新的空白提交历史
-git checkout --orphan new-main
-git add .
-git commit -m "重新开始"
-git branch -D main
-git branch -m main
-git push -f origin main
-```
-
----
-
-## 📞 需要帮助？
-
-1. 查看 [GitHub Pages 文档](https://docs.github.com/pages)
-2. 搜索相关错误信息
-3. 检查浏览器控制台（F12）
-
----
-
-## ✅ 部署检查清单
-
-部署完成后，检查以下项目：
-
-- [ ] 首页能正常显示
-- [ ] "规则说明"页面可以访问
-- [ ] "开始学习"能进入主页面
-- [ ] 点击"下一轮"轮转正常
-- [ ] 插上动画播放正常
-- [ ] 箭头显示正常
-- [ ] 开关功能正常
-- [ ] 手机访问正常
-- [ ] 二维码生成并测试
-
-全部通过？恭喜你，部署成功！🎉
-
----
-
-**现在就开始部署吧！** 🚀
-
-
+祝您测试愉快！🏐
